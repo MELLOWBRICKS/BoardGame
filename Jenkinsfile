@@ -54,7 +54,7 @@ pipeline {
                                     docker compose restart boardgame-app
                                     
                                     echo "Waiting for application..."
-                                    sleep 10
+                                    sleep 30
                                     
                                     echo "Health check..."
                                     curl -f http://localhost:8080/login || exit 1
