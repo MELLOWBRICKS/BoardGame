@@ -10,7 +10,6 @@ pipeline {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
                     script {
-                        // Get all running production instances
                         def instanceIPs = sh(
                             script: '''
                                 aws ec2 describe-instances \
@@ -38,7 +37,6 @@ pipeline {
                 script {
                     def instances = env.INSTANCE_IPS.split(',')
                     
-                    // Update each instance one by one
                     for (int i = 0; i < instances.length; i++) {
                         def instanceIP = instances[i]
                         
@@ -52,27 +50,22 @@ pipeline {
                                     echo "Pulling latest code..."
                                     git pull origin main
                                     
-                                    echo "Rebuilding Docker image..."
-                                    docker compose build
+                                    echo "Restarting container..."
+                                    docker compose restart boardgame-app
                                     
-                                    echo "Restarting container with zero downtime..."
-                                    docker compose up -d --no-deps --build boardgame-app
-                                    
-                                    echo "Waiting for application to be ready..."
-                                    sleep 30
+                                    echo "Waiting for application..."
+                                    sleep 10
                                     
                                     echo "Health check..."
                                     curl -f http://localhost:8080/login || exit 1
                                     
-                                    echo "Instance ${instanceIP} updated successfully!"
+                                    echo "Instance ${instanceIP} updated!"
                                 '
                             """
                         }
                         
-                        // Wait before updating next instance (if multiple)
                         if (i < instances.length - 1) {
-                            echo "Waiting 20 seconds before updating next instance..."
-                            sleep 20
+                            sleep 10
                         }
                     }
                 }
@@ -106,7 +99,6 @@ pipeline {
         }
         failure {
             echo '❌ Application update failed!'
-            echo 'Check logs for details'
         }
     }
 }
