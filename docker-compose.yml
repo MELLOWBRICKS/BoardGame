@@ -1,0 +1,13 @@
+services:
+  boardgame-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/target
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    restart: unless-stopped

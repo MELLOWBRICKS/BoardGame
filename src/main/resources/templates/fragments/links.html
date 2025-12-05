@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Links</title>
+</head>
+
+<body>
+    <nav class="navigation-links navbar navbar-expand-lg navbar-modern sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-gradient" href="/" th:href="@{/}">
+                <i class="fas fa-dice me-2"></i>Board Game Collection
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="#" th:href="@{/}" class="nav-link fw-semibold">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    
+                    <!-- Guest Navigation -->
+                    <li sec:authorize="!hasRole('ROLE_USER')" class="nav-item">
+                        <a href="#" th:href="@{/login}" class="nav-link fw-semibold">
+                            <i class="fas fa-sign-in-alt me-1"></i>Sign In
+                        </a>
+                    </li>
+                    <li sec:authorize="!hasRole('ROLE_USER')" class="nav-item">
+                        <a href="#" th:href="@{/newUser}" class="nav-link fw-semibold">
+                            <i class="fas fa-user-plus me-1"></i>Sign Up
+                        </a>
+                    </li>
+                    
+                    <!-- User Navigation -->
+                    <li sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')" class="nav-item">
+                        <a href="#" th:href="@{/secured/addBoardGame}" class="nav-link fw-semibold">
+                            <i class="fas fa-plus me-1"></i>Add Game
+                        </a>
+                    </li>
+                    
+                    <!-- Manager Navigation -->
+                    <li sec:authorize="hasRole('ROLE_MANAGER')" class="nav-item">
+                        <a href="#" th:href="@{/manager}" class="nav-link fw-semibold">
+                            <i class="fas fa-cog me-1"></i>Manage
+                        </a>
+                    </li>
+                    
+                    <!-- Logout -->
+                    <li sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')" class="nav-item">
+                        <form action="#" th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="nav-link btn btn-link fw-semibold border-0 bg-transparent">
+                                <i class="fas fa-sign-out-alt me-1"></i>Sign Out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="bottom-links">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-center align-items-center py-4">
+                <div class="modern-card px-4 py-2">
+                    <div class="d-flex align-items-center gap-4">
+                        <a href="#" class="text-decoration-none text-muted">
+                            <i class="fas fa-info-circle me-1"></i>About
+                        </a>
+                        <a href="mailto:contact@boardgames.com" class="text-decoration-none text-muted">
+                            <i class="fas fa-envelope me-1"></i>Contact
+                        </a>
+                        <a href="#" class="text-decoration-none text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>Privacy
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
