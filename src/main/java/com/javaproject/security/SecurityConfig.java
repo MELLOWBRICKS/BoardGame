@@ -35,19 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
-    /**
-     * Creates a bean of type JdbcUserDetailsManager that will be used in
-     * HomeController
-     * 
-     * @return an instance configured to use our datasource
-     * @throws Exception
-     */
     @Bean
     public JdbcUserDetailsManager jdbcUserDetailsManager() throws Exception {
-        // provides crud operations for users
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager();
-
-        // Link up with our datasource
         jdbcUserDetailsManager.setDataSource(dataSource);
         return jdbcUserDetailsManager;
     }
@@ -55,12 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/user/**").hasAnyRole("USER", "MANAGER") // sets up authorization
+                .antMatchers("/user/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers("/secured/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers("/manager/**").hasRole("MANAGER")
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/", "/**").permitAll() // allows access to index in templates
-                .and() // allows us to chain
+                .antMatchers("/", "/**").permitAll()
+                .and()
                 .formLogin().loginPage("/login")
                 .defaultSuccessUrl("/secured")
                 .and()
@@ -76,11 +66,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .withDefaultSchema()
                 .passwordEncoder(passwordEncoder)
+                .withDefaultSchema()
                 .withUser("bugs")
                 .password(passwordEncoder.encode("bunny")).roles("USER")
                 .and()
