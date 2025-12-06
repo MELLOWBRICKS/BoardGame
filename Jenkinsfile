@@ -50,8 +50,8 @@ pipeline {
                                     echo "Pulling latest code..."
                                     git pull origin main
                                     
-                                    echo "Restarting container..."
-                                    docker compose restart boardgame-app
+                                    echo "Rebuilding container..."
+                                    docker compose up -d --build --force-recreate boardgame-app
                                     
                                     echo "Waiting for application..."
                                     sleep 30
