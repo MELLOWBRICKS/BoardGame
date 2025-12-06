@@ -2,137 +2,53 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" data-bs-theme="light">
 
-<head th:replace="fragments/header.html :: html-head(title='Board Game Collection')"></head>
+
+<head th:replace="fragments/header.html :: html-head(title='Boardgame Home')"></head>
 
 <body>
     <nav th:replace="fragments/links :: nav.navigation-links"></nav>
 
-    <main class="container py-4">
-        <!-- Hero Section -->
-        <div class="hero-section modern-card">
-            <h1 class="hero-title">🎲 Board Game Collection</h1>
-            <p class="lead text-muted mb-4">Discover, explore, and manage your favorite board games</p>
-            
-            <!-- Success/Error Messages -->
-            <div id="messages" class="mb-4">
-                <div th:if="${userAddedMsg}" class="success">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <span th:text="${userAddedMsg}"></span>
-                </div>
-            </div>
-        </div>
+    <main class="container">
+        <div class="p-4 p-md-5 mb-4 text-center">
+            <div class="container col-md-6">
+                <h1>Boardgame Lists</h1>
 
-        <!-- Board Games Grid -->
-        <div class="row">
-            <div class="col-12">
-                <div th:unless="${boardgames.empty}">
-                    <h2 class="text-gradient mb-4">Available Games</h2>
-                    <div class="boardgame-grid">
-                        <a href="#" th:href='@{|/${boardgame.id}|}' 
-                           class="boardgame-card text-decoration-none"
-                           th:each="boardgame : ${boardgames}">
-                            <div class="d-flex align-items-center">
-                                <div class="me-3">
-                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" 
-                                         style="width: 50px; height: 50px;">
-                                        <i class="fas fa-dice text-white"></i>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 class="mb-1" th:text="${boardgame.name}">Game Name</h4>
-                                    <small class="text-muted">Click to view details</small>
-                                </div>
-                            </div>
-                        </a>
+                <div id="error" class="error pt-3">
+                    <div th:if="${userAddedMsg}">
+                        <p th:text="${userAddedMsg}"></p>
                     </div>
                 </div>
 
-                <!-- Empty State -->
-                <div th:if="${boardgames.empty}" class="text-center py-5">
-                    <div class="modern-card p-5">
-                        <i class="fas fa-dice-d20 text-muted mb-3" style="font-size: 4rem;"></i>
-                        <h3 class="text-muted mb-3">No Games Yet</h3>
-                        <p class="text-muted mb-4">Start building your board game collection!</p>
-                        <div sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')">
-                            <a href="#" th:href="@{/secured/addBoardGame}" 
-                               class="btn btn-modern btn-primary-modern">
-                                <i class="fas fa-plus me-2"></i>Add Your First Game
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Cards -->
-        <div class="row mt-5">
-            <!-- Guest Actions -->
-            <div sec:authorize="!hasRole('ROLE_USER')" class="col-md-6 mb-4">
-                <div class="modern-card p-4 h-100">
-                    <div class="text-center">
-                        <i class="fas fa-sign-in-alt text-primary mb-3" style="font-size: 2.5rem;"></i>
-                        <h4 class="mb-3">Already a Member?</h4>
-                        <p class="text-muted mb-4">Access your personal game collection and reviews</p>
-                        <a href="#" th:href="@{/login}" class="btn btn-modern btn-primary-modern w-100">
-                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                <div th:unless="${boardgames.empty}" class="py-3 my-3">
+                    <div class="list-group d-flex flex-wrap justify-content-center" th:each="boardgame : ${boardgames}">
+                        <a href="#" th:href='@{|/${boardgame.id}|}'
+                            class="list-group-item list-group-item-action py-3 my-2">
+                            <h4 th:text="${boardgame.name}">Name</h4>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div sec:authorize="!hasRole('ROLE_USER')" class="col-md-6 mb-4">
-                <div class="modern-card p-4 h-100">
-                    <div class="text-center">
-                        <i class="fas fa-user-plus text-success mb-3" style="font-size: 2.5rem;"></i>
-                        <h4 class="mb-3">New Here?</h4>
-                        <p class="text-muted mb-4">Join our community and start your board game journey</p>
-                        <a href="#" th:href="@{/newUser}" class="btn btn-modern btn-outline-modern w-100">
-                            <i class="fas fa-user-plus me-2"></i>Create Account
-                        </a>
-                    </div>
-                </div>
+            <div th:if="${boardgames.empty}">
+                <p>Currently there is no boardgame database exists.</p>
             </div>
 
-            <!-- User Actions -->
-            <div sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')" class="col-md-6 mb-4">
-                <div class="modern-card p-4 h-100">
-                    <div class="text-center">
-                        <i class="fas fa-plus-circle text-primary mb-3" style="font-size: 2.5rem;"></i>
-                        <h4 class="mb-3">Add New Game</h4>
-                        <p class="text-muted mb-4">Expand your collection with a new board game</p>
-                        <a href="#" th:href="@{/secured/addBoardGame}" 
-                           class="btn btn-modern btn-primary-modern w-100">
-                            <i class="fas fa-plus me-2"></i>Add Board Game
-                        </a>
-                    </div>
-                </div>
+            <div sec:authorize="!hasRole('ROLE_USER')">
+                <p class="lead">For more services, login <a href="#" th:href="@{/login}">Here</a></p>
+                <p class="lead">To join to the service, <a href="#" th:href="@{/newUser}">Click</a> here</p>
             </div>
-
-            <div sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')" class="col-md-6 mb-4">
-                <div class="modern-card p-4 h-100">
-                    <div class="text-center">
-                        <i class="fas fa-sign-out-alt text-warning mb-3" style="font-size: 2.5rem;"></i>
-                        <h4 class="mb-3">Session</h4>
-                        <p class="text-muted mb-4">Safely sign out of your account</p>
-                        <form action="#" th:action="@{/logout}" method="post" class="w-100">
-                            <button type="submit" class="btn btn-modern btn-outline-modern w-100">
-                                <i class="fas fa-sign-out-alt me-2"></i>Sign Out
-                            </button>
-                        </form>
-                    </div>
-                </div>
+            <div sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MANAGER')">
+                <p class="lead">Click <a href="#" th:href="@{/secured/addBoardGame}">Here</a> to add a boardgame!</p>
+                <form action="#" th:action="@{/logout}" method="post">
+                    <input type="submit" value="Logout" class="btn btn-primary m-2 pb-2">
+                </form>
             </div>
         </div>
     </main>
+    <div class="b-example-divider border border-light"></div>
 
-    <!-- Footer -->
-    <div class="mt-5">
-        <div th:include="fragments/links :: div.bottom-links"></div>
-        <div th:replace="fragments/footer.html :: page-footer"></div>
-    </div>
-
-    <!-- Font Awesome for Icons -->
-    <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
+    <div th:include="fragments/links :: div.bottom-links"></div>
+    <div th:replace="fragments/footer.html :: page-footer"></div>
 </body>
 
 </html>
